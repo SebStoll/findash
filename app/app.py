@@ -20,7 +20,14 @@ app.config.suppress_callback_exceptions = True
 # DATA
 # ====
 
-df = pd.read_csv('data/stockdata.csv')
+# Read test data from within project
+# df = pd.read_csv('data/stockdata.csv')
+
+# Read "production data"
+# Assumption: Folder findash_data on same level as
+# folder app/
+df = pd.read_csv('../findash_data/stockdata.csv')
+
 df['date'] = pd.to_datetime(df['date'])
 df = df.sort_values(by=['date', 'ticker'])
 
@@ -233,4 +240,6 @@ app.layout = html.Div(
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    # app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=8050, debug=True)  # If run in docker
+    # app.run_server(host='127.0.0.1', port=5000, debug=True)  # If local run in windows

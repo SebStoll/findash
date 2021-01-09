@@ -1,13 +1,14 @@
-FROM ubuntu:18.10
-LABEL maintainer="Sebastian Stoll <seb_stoll@gmx.de>"
+# https://towardsdatascience.com/how-to-use-docker-to-deploy-a-dashboard-app-on-aws-8df5fb322708
+# https://flaviocopes.com/docker-access-files-outside-container/
+# https://www.digitalocean.com/community/tutorials/how-to-share-data-between-the-docker-container-and-the-host
 
-RUN apt-get update
-RUN apt-get install -y python3 python3-dev python3-pip
+FROM continuumio/miniconda3
 
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install -r /tmp/requirements.txt
+COPY requirements.txt /tmp/
+COPY ./app /app
+WORKDIR "/app"
 
-COPY ./ /app
-WORKDIR /app
+RUN conda install --file /tmp/requirements.txt
 
-CMD gunicorn --bind 0.0.0.0:80 wsgi
+ENTRYPOINT [ "python3" ]
+CMD [ "app.py" ]
